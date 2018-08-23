@@ -8,22 +8,38 @@ with open(filename) as f:
     for i in range(0, 4):
         next(reader)
     header_row = next(reader)
-    years = header_row[-12:-2]
+    years = header_row[-43:-2]
+    
+    death_rates = {
+                   'Russian Federation':[],
+                   'Kazakhstan':[],
+                   'Ukraine':[],
+                   'India':[],
+                   'Brazil':[],
+                   'China':[],
+                   'Japan':[],
+                   'United States':[],
+                   'Uganda':[],
+                   'Finland':[],
+                   }
 
-    rus_deaths = {}
-    deaths = []
-    for row in reader:
-        if row[0] == 'Russian Federation':
-            deaths = row[-12:-2]
-            rus_deaths = dict(zip(years, deaths))
+    for country in death_rates.keys():
+        f.seek(0)
+        for i in range(0, 4):
+            next(reader)
+        deaths = []
+        for row in reader:
+            if row[0] == country:
+                deaths = row[-43:-2]
+        deaths = list(map(float, deaths))
+        death_rates[country] = deaths
 
-deaths = list(map(float, deaths))
-years = list(map(int, years))
-print(deaths)
-
-line_chart = pygal.Line()
+line_chart = pygal.Line(width=1200, interpolate='cubic',legend_at_bottom=True,
+                        legend_at_bottom_columns=5,)
 line_chart.title = 'Death rate, crude (per 1,000 people)'
 line_chart.x_labels = map(str, years)
-line_chart.add('russia', deaths)
+for country, deaths in death_rates.items():
+    line_chart.add(country, deaths)
+
 line_chart.render_to_file('death_chart.svg')
 
