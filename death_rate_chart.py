@@ -35,7 +35,7 @@ with open(filename) as f:
         death_rates[country] = deaths
 
 line_chart = pygal.Line(width=1200, interpolate='cubic',legend_at_bottom=True,
-                        legend_at_bottom_columns=5,)
+                        legend_at_bottom_columns=5, x_label_rotation=340)
 line_chart.title = 'Death rate, crude (per 1,000 people)'
 line_chart.x_labels = map(str, years)
 for country, deaths in death_rates.items():
